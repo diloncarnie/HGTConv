@@ -4,9 +4,11 @@ from typing import Dict, List, Optional, Tuple, Union
 import torch
 from torch import Tensor
 from torch.nn import Parameter
+from torch.nn import ModuleDict, ModuleList, LayerNorm, Dropout
 
 from torch_geometric.nn.conv import MessagePassing
 from torch_geometric.nn.dense import HeteroDictLinear, HeteroLinear
+from torch_geometric.nn import Linear
 from torch_geometric.nn.inits import ones
 from torch_geometric.nn.parameter_dict import ParameterDict
 from torch_geometric.typing import Adj, EdgeType, Metadata, NodeType
@@ -234,3 +236,70 @@ class HGTConv(MessagePassing):
     def __repr__(self) -> str:
         return (f'{self.__class__.__name__}(-1, {self.out_channels}, '
                 f'heads={self.heads})')
+
+
+class HGT(torch.nn.Module):
+    def __init__(self, hidden_channels, num_heads, num_layers, metadata, 
+                 dropout=0.2, prev_norm=True, last_norm=True):
+        super().__init__()
+        self.node_types = metadata[0]
+        self.num_layers = num_layers
+
+        # Initial Adaptation Layers
+        self.lin_dict = ModuleDict()
+        for node_type in self.node_types:
+            self.lin_dict[node_type] = Linear(-1, hidden_channels)
+
+        self.drop = Dropout(dropout)
+
+        # Convolutional Layers
+        self.convs = ModuleList()
+        self.layer_norms = ModuleList()
+        
+        for i in range(num_layers):
+            conv = HGTConv(hidden_channels, hidden_channels, metadata, num_heads)
+            self.convs.append(conv)
+            
+            # Determine if this layer should use normalization
+            is_last = (i == num_layers - 1)
+            use_layer_norm = last_norm if is_last else prev_norm
+            
+            if use_layer_norm:
+                norm_dict = ModuleDict({
+                    node_type: LayerNorm(hidden_channels)
+                    for node_type in self.node_types
+                })
+                self.layer_norms.append(norm_dict)
+            else:
+                self.layer_norms.append(None)
+
+    def forward(self, x_dict, edge_index_dict, custom_order=None):
+        # 1. Initial Projection & Activation
+        x_dict = {
+            node_type: self.drop(torch.tanh(self.lin_dict[node_type](x)))
+            for node_type, x in x_dict.items()
+        }
+
+        # 2. Message Passing Layers
+        for i, conv in enumerate(self.convs):
+            if custom_order is not None:
+                # Custom Grouped Sequential Message Passing
+                for group in custom_order:
+                    subset_edges = {etype: edge_index_dict[etype] for etype in group}
+                    new_nodes = conv(x_dict, subset_edges)
+                    dst_types = {etype[-1] for etype in group}
+                    for node_type in dst_types:
+                        if new_nodes.get(node_type) is not None:
+                            x_dict[node_type] = new_nodes[node_type]
+            else:
+                # Default parallel message passing
+                x_dict = conv(x_dict, edge_index_dict)
+
+            # 3. Post-Conv Normalization & Dropout
+            for node_type in x_dict:
+                if x_dict[node_type] is not None:
+                    x_dict[node_type] = self.drop(x_dict[node_type])
+                    if self.layer_norms[i] is not None:
+                        x_dict[node_type] = self.layer_norms[i][node_type](x_dict[node_type])
+
+        return x_dict
