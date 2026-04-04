@@ -31,12 +31,6 @@ class HGTConv(MessagePassing):
     `"Heterogeneous Graph Transformer" <https://arxiv.org/abs/2003.01332>`_
     paper.
 
-    .. note::
-
-        For an example of using HGT, see `examples/hetero/hgt_dblp.py
-        <https://github.com/pyg-team/pytorch_geometric/blob/master/examples/
-        hetero/hgt_dblp.py>`_.
-
     Args:
         in_channels (int or Dict[str, int]): Size of each input sample of every
             node type, or :obj:`-1` to derive the size from the first input(s)
@@ -221,7 +215,6 @@ class HGTConv(MessagePassing):
     def __repr__(self) -> str:
         return (f'{self.__class__.__name__}(-1, {self.out_channels}, '
                 f'heads={self.heads})')
-
 
 class HGT(torch.nn.Module):
     def __init__(self, hidden_channels, num_heads, num_layers, metadata, 

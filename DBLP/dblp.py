@@ -2,11 +2,10 @@ import os.path as osp
 
 import torch
 import torch.nn.functional as F
-from torch.nn import ModuleDict, ModuleList, LayerNorm, Dropout
 
 import torch_geometric
 from torch_geometric.datasets import DBLP
-from DBLP.hgt_model import HGTConv, HGT
+from hgt_model import HGT
 from torch_geometric.nn import Linear
 
 path = osp.join(osp.dirname(osp.realpath(__file__)), 'DBLP-dataset')
@@ -26,7 +25,7 @@ class DBLPClassifier(torch.nn.Module):
         self.lin = Linear(hidden_channels, out_channels)
 
     def forward(self, x_dict, edge_index_dict, custom_order=None):
-        out_dict = self.encoder(x_dict, edge_index_dict, custom_order)
+        out_dict = self.encoder(x_dict, edge_index_dict, custom_order=custom_order)
         return self.lin(out_dict['author'])
 
 
