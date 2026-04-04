@@ -1,0 +1,13 @@
+pyHGT/
+pytorch_geometric/
+TGAT/
+*.csv
+processed_data/
+DBLP-dataset/
+/raw*
+/cache/*
+.__pycache__/
+*.pyc   
+*.html
+*.pdf
+*.vscode
