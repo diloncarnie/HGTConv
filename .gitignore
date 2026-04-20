@@ -11,7 +11,3 @@ DBLP-dataset/
 *.pdf
 *.vscode
 data
-*.csv
-*.gpkg
-*.json
-*.pt

@@ -86,17 +86,26 @@ class PneumaEpisode(IterableDataset):
         }
 
         # Load and sort by time
-        self._proc_df = pd.read_csv(processed_csv, dtype={'segment_id': str})
+        proc_df = pd.read_csv(processed_csv, dtype={'segment_id': str})
         # Snap timestamps to the nearest 1 second (1Hz) to eliminate floating-point jitter duplication
-        self._proc_df['time_bucket'] = self._proc_df['time'].round(0)
-        self._proc_df = self._proc_df.drop_duplicates(subset=['time_bucket', 'track_id'])
-        self._proc_df = self._proc_df.sort_values('time').reset_index(drop=True)
+        proc_df['time_bucket'] = proc_df['time'].round(0)
+        proc_df = proc_df.drop_duplicates(subset=['time_bucket', 'track_id'])
+        proc_df = proc_df.sort_values('time').reset_index(drop=True)
         
-        self._agg_df = pd.read_csv(aggregated_csv, dtype={'segment_id': str}).sort_values('timestamp').reset_index(drop=True)
+        agg_df = pd.read_csv(aggregated_csv, dtype={'segment_id': str}).sort_values('timestamp').reset_index(drop=True)
 
-        self.timestamps: List[float] = sorted(self._proc_df['time_bucket'].unique().tolist())
+        self.timestamps: List[float] = sorted(proc_df['time_bucket'].unique().tolist())
         # We yield pairs (t, t_next) so the last timestamp has no target
         self._num_steps: int = max(0, len(self.timestamps) - 1)
+
+        # Initialize and vectorize dataframes exactly ONCE per episode
+        self._builder = PneumaSnapshotBuilder(
+            self.static_graph,
+            self.filter_outliers,
+            self.feature_stats,
+        )
+        # Vectorize and cache to avoid re-processing CSVs every epoch
+        self._vectorized_data = self._builder.load_episode(proc_df, agg_df)
 
     def __len__(self) -> int:
         if self._num_steps == 0:
@@ -112,29 +121,24 @@ class PneumaEpisode(IterableDataset):
         valid_starts = max(1, self._num_steps - self.chunk_length)
         start_indices = random.choices(range(valid_starts), k=self.chunks_per_epoch)
 
-        # Initialize and vectorize dataframes exactly ONCE per episode
-        builder = PneumaSnapshotBuilder(
-            self.static_graph,
-            self.filter_outliers,
-            self.feature_stats,
-        )
-        builder.load_episode(self._proc_df, self._agg_df)
-
         for start_idx in start_indices:
-            # Reset temporal states instantly for the new chunk
-            builder.reset_state()
+            # Re-set builder with the cached vectorized data
+            self._builder.set_episode_data(
+                self._vectorized_data['time_groups'], 
+                self._vectorized_data['agg_data']
+            )
 
             # 1. Warm-up phase: Build historic context in the deques silently
             warmup_idx = max(0, start_idx - self.warmup_steps)
             for i in range(warmup_idx, start_idx):
-                builder.get_snapshot(self.timestamps[i])  # t_next=None, no targets generated
+                self._builder.get_snapshot(self.timestamps[i])  # t_next=None, no targets generated
 
             # 2. Training phase: Yield consecutive snapshots with targets
             end_idx = min(start_idx + self.chunk_length, self._num_steps)
             for i in range(start_idx, end_idx):
                 t = self.timestamps[i]
                 t_next = self.timestamps[i + 1]
-                snapshot, targets = builder.get_snapshot(t, t_next)
+                snapshot, targets = self._builder.get_snapshot(t, t_next)
 
                 if self.use_hgt_sampling and snapshot['vehicle'].num_nodes > 0:
                     # 1. Tag original global IDs before sampling

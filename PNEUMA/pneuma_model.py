@@ -75,23 +75,23 @@ PNEUMA_CUSTOM_ORDER: List[List[Tuple[str, str, str]]] = [
         ('vehicle',  'on',          'segment'),
         ('segment',  'occupied_by', 'vehicle'),
     ],
-    # # Group 3: Road-network topology propagation (all 9 types in parallel)
-    # [
-    #     ('segment', 'to',              'segment'),
-    #     ('segment', 'from',            'segment'),
-    #     ('segment', 'turns_into',      'segment'),
-    #     ('segment', 'crosses',         'segment'),
-    #     ('segment', 'crossed_by',      'segment'),
-    #     ('segment', 'merges_with',     'segment'),
-    #     ('segment', 'merged_by',       'segment'),
-    #     ('segment', 'merges_into',     'segment'),
-    #     ('segment', 'intersects_with', 'segment'),
-    # ],
-    # # Group 4: Controller influence on segments (parallel)
-    # [
-    #     ('controller', 'controls',      'segment'),
-    #     ('segment',    'controlled_by', 'controller'),
-    # ],
+    # Group 3: Road-network topology propagation (all 9 types in parallel)
+    [
+        ('segment', 'to',              'segment'),
+        ('segment', 'from',            'segment'),
+        ('segment', 'turns_into',      'segment'),
+        ('segment', 'crosses',         'segment'),
+        ('segment', 'crossed_by',      'segment'),
+        ('segment', 'merges_with',     'segment'),
+        ('segment', 'merged_by',       'segment'),
+        ('segment', 'merges_into',     'segment'),
+        ('segment', 'intersects_with', 'segment'),
+    ],
+    # Group 4: Controller influence on segments (parallel)
+    [
+        ('controller', 'controls',      'segment'),
+        ('segment',    'controlled_by', 'controller'),
+    ],
 ]
 
 
@@ -250,46 +250,40 @@ class PneumaModel(torch.nn.Module):
         targets: Dict,
     ) -> Tuple[Tensor, Dict[str, float]]:
         """
-        Compute the combined autoregressive loss.
-
-        Parameters
-        ----------
-        preds :
-            Output of forward().
-        targets :
-            Dict from PneumaSnapshotBuilder._build_targets():
-              'vehicle_feats'    [N_veh, 12]
-              'vehicle_mask'     [N_veh]  bool
-              'segment_feats'    [N_upd, 1]
-              'segment_mask_idx' [N_upd]  long
-
-        Returns
-        -------
-        total_loss : scalar Tensor
-        metrics    : dict with 'vehicle_loss' and 'segment_loss' as Python floats
+        Compute the combined autoregressive loss and auxiliary metrics (MAE, RMSE).
         """
         metrics: Dict[str, float] = {}
         device = next(self.parameters()).device
 
-        # --- Vehicle loss ---
-        vehicle_loss = torch.tensor(0.0, device=device)
+        # --- Vehicle metrics ---
+        vehicle_mse = torch.tensor(0.0, device=device)
+        vehicle_mae = torch.tensor(0.0, device=device)
         if 'vehicle' in preds:
             v_mask = targets['vehicle_mask'].to(device)
             if v_mask.sum() > 0:
                 v_pred = preds['vehicle'][v_mask]
                 v_tgt = targets['vehicle_feats'].to(device)[v_mask]
-                vehicle_loss = F.mse_loss(v_pred, v_tgt)
-        metrics['vehicle_loss'] = float(vehicle_loss)
+                vehicle_mse = F.mse_loss(v_pred, v_tgt)
+                vehicle_mae = F.l1_loss(v_pred, v_tgt)
+        
+        metrics['vehicle_loss'] = float(vehicle_mse)
+        metrics['vehicle_mae']  = float(vehicle_mae)
+        metrics['vehicle_rmse'] = float(torch.sqrt(vehicle_mse))
 
-        # --- Segment loss ---
-        segment_loss = torch.tensor(0.0, device=device)
+        # --- Segment metrics ---
+        segment_mse = torch.tensor(0.0, device=device)
+        segment_mae = torch.tensor(0.0, device=device)
         if 'segment' in preds:
             seg_idx = targets['segment_mask_idx'].to(device)
             if seg_idx.shape[0] > 0:
                 s_pred = preds['segment'][seg_idx]           # [N_upd, 1]
                 s_tgt = targets['segment_feats'].to(device)  # [N_upd, 1]
-                segment_loss = F.mse_loss(s_pred, s_tgt)
-        metrics['segment_loss'] = float(segment_loss)
+                segment_mse = F.mse_loss(s_pred, s_tgt)
+                segment_mae = F.l1_loss(s_pred, s_tgt)
+        
+        metrics['segment_loss'] = float(segment_mse)
+        metrics['segment_mae']  = float(segment_mae)
+        metrics['segment_rmse'] = float(torch.sqrt(segment_mse))
 
-        total_loss = self.lambda_v * vehicle_loss + self.lambda_s * segment_loss
+        total_loss = self.lambda_v * vehicle_mse + self.lambda_s * segment_mse
         return total_loss, metrics

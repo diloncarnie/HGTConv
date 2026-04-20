@@ -1,0 +1,1152 @@
+[
+  {
+    "epoch": 0,
+    "train": {
+      "loss": 1.447192418575287,
+      "vehicle_loss": 0.9760853797197342,
+      "vehicle_mae": 0.7436160445213318,
+      "vehicle_rmse": 0.9867770612239838,
+      "segment_loss": 1.5703566923737526,
+      "segment_mae": 0.9860619857907296,
+      "segment_rmse": 1.1915292024612427,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.2621695280075074,
+      "vehicle_loss": 0.9518062949180603,
+      "vehicle_mae": 0.7301171779632568,
+      "vehicle_rmse": 0.9751058220863342,
+      "segment_loss": 1.0345441579818726,
+      "segment_mae": 0.860642921924591,
+      "segment_rmse": 1.0000186681747436,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 1,
+    "train": {
+      "loss": 1.1234233289957047,
+      "vehicle_loss": 0.9457842648029328,
+      "vehicle_mae": 0.716778963804245,
+      "vehicle_rmse": 0.9674876421689987,
+      "segment_loss": 0.5921301871538163,
+      "segment_mae": 0.565332293510437,
+      "segment_rmse": 0.6410914540290833,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.2726478576660156,
+      "vehicle_loss": 0.9327043890953064,
+      "vehicle_mae": 0.710994279384613,
+      "vehicle_rmse": 0.965332818031311,
+      "segment_loss": 1.1331449091434478,
+      "segment_mae": 0.8961049258708954,
+      "segment_rmse": 1.0352105259895326,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 2,
+    "train": {
+      "loss": 1.2141283005475998,
+      "vehicle_loss": 0.9535141944885254,
+      "vehicle_mae": 0.7456623435020446,
+      "vehicle_rmse": 0.9758857846260071,
+      "segment_loss": 0.8687136456370353,
+      "segment_mae": 0.7732456043362618,
+      "segment_rmse": 0.907851266860962,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.2124865531921387,
+      "vehicle_loss": 0.943584680557251,
+      "vehicle_mae": 0.7254693031311035,
+      "vehicle_rmse": 0.9697821974754334,
+      "segment_loss": 0.8963395476341247,
+      "segment_mae": 0.7764505863189697,
+      "segment_rmse": 0.9445560932159424,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 3,
+    "train": {
+      "loss": 1.2513376623392105,
+      "vehicle_loss": 0.9542598605155945,
+      "vehicle_mae": 0.737463253736496,
+      "vehicle_rmse": 0.9755143970251083,
+      "segment_loss": 0.9902593322098255,
+      "segment_mae": 0.8105503126978875,
+      "segment_rmse": 0.9615895107388497,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.3174856185913086,
+      "vehicle_loss": 0.857372784614563,
+      "vehicle_mae": 0.6879188418388367,
+      "vehicle_rmse": 0.9257020711898803,
+      "segment_loss": 1.5337092638015748,
+      "segment_mae": 1.02700035572052,
+      "segment_rmse": 1.2090597033500672,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 4,
+    "train": {
+      "loss": 1.1644750714302063,
+      "vehicle_loss": 0.8471257865428925,
+      "vehicle_mae": 0.6971472650766373,
+      "vehicle_rmse": 0.9194416642189026,
+      "segment_loss": 1.057830883562565,
+      "segment_mae": 0.8326348006725312,
+      "segment_rmse": 1.017185416817665,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.2697775959968567,
+      "vehicle_loss": 0.9056288719177246,
+      "vehicle_mae": 0.7019722104072571,
+      "vehicle_rmse": 0.9511918187141418,
+      "segment_loss": 1.2138290226459503,
+      "segment_mae": 0.8661523282527923,
+      "segment_rmse": 1.06694153547287,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 5,
+    "train": {
+      "loss": 1.6781375050544738,
+      "vehicle_loss": 0.8412893682718277,
+      "vehicle_mae": 0.6966953814029694,
+      "vehicle_rmse": 0.916069170832634,
+      "segment_loss": 2.789493644237518,
+      "segment_mae": 0.836942546069622,
+      "segment_rmse": 1.1757854878902436,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.8706406116485597,
+      "vehicle_loss": 0.8718768119812011,
+      "vehicle_mae": 0.6952193737030029,
+      "vehicle_rmse": 0.9335752248764038,
+      "segment_loss": 3.3292126178741457,
+      "segment_mae": 1.4980414152145385,
+      "segment_rmse": 1.7560414314270019,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 6,
+    "train": {
+      "loss": 1.2935699254274369,
+      "vehicle_loss": 0.9215220749378205,
+      "vehicle_mae": 0.7241028636693955,
+      "vehicle_rmse": 0.9580288410186768,
+      "segment_loss": 1.2401594012975692,
+      "segment_mae": 0.8177704945206642,
+      "segment_rmse": 1.0292717099189759,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.0621705770492553,
+      "vehicle_loss": 0.7961273074150086,
+      "vehicle_mae": 0.6557791829109192,
+      "vehicle_rmse": 0.8910674214363098,
+      "segment_loss": 0.8868108510971069,
+      "segment_mae": 0.7506733775138855,
+      "segment_rmse": 0.9391464591026306,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 7,
+    "train": {
+      "loss": 1.2630132287740707,
+      "vehicle_loss": 0.9011893510818482,
+      "vehicle_mae": 0.7162267953157425,
+      "vehicle_rmse": 0.9489550799131393,
+      "segment_loss": 1.2060795471072197,
+      "segment_mae": 0.8860166952013969,
+      "segment_rmse": 1.0548249632120132,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.1619999289512635,
+      "vehicle_loss": 0.8185227751731873,
+      "vehicle_mae": 0.6799872636795044,
+      "vehicle_rmse": 0.9045874118804932,
+      "segment_loss": 1.1449238181114196,
+      "segment_mae": 0.8465435981750489,
+      "segment_rmse": 1.0064913630485535,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 8,
+    "train": {
+      "loss": 1.1006958603858947,
+      "vehicle_loss": 0.8713193297386169,
+      "vehicle_mae": 0.7010794639587402,
+      "vehicle_rmse": 0.932486629486084,
+      "segment_loss": 0.7645884439349174,
+      "segment_mae": 0.7201597169041634,
+      "segment_rmse": 0.8588487565517425,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.1875749588012696,
+      "vehicle_loss": 0.8825457572937012,
+      "vehicle_mae": 0.6572874426841736,
+      "vehicle_rmse": 0.9379604697227478,
+      "segment_loss": 1.0167640447616577,
+      "segment_mae": 0.8136852741241455,
+      "segment_rmse": 1.0023914575576782,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 9,
+    "train": {
+      "loss": 1.2208049654960633,
+      "vehicle_loss": 0.9175706446170807,
+      "vehicle_mae": 0.7230122208595275,
+      "vehicle_rmse": 0.9573730081319809,
+      "segment_loss": 1.0107810527086258,
+      "segment_mae": 0.8059715747833252,
+      "segment_rmse": 0.9856950640678406,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.1016283273696899,
+      "vehicle_loss": 0.781085216999054,
+      "vehicle_mae": 0.6653559446334839,
+      "vehicle_rmse": 0.8837382674217225,
+      "segment_loss": 1.0684769749641418,
+      "segment_mae": 0.8971603274345398,
+      "segment_rmse": 1.0195093631744385,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 10,
+    "train": {
+      "loss": 1.0847115397453309,
+      "vehicle_loss": 0.8382871657609939,
+      "vehicle_mae": 0.6887780100107193,
+      "vehicle_rmse": 0.9144455552101135,
+      "segment_loss": 0.8214144900441169,
+      "segment_mae": 0.7750391006469727,
+      "segment_rmse": 0.8958558142185211,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.0614345788955688,
+      "vehicle_loss": 0.8314863681793213,
+      "vehicle_mae": 0.680383837223053,
+      "vehicle_rmse": 0.9116793394088745,
+      "segment_loss": 0.7664940834045411,
+      "segment_mae": 0.710145890712738,
+      "segment_rmse": 0.8716912388801574,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 11,
+    "train": {
+      "loss": 1.2085557490587235,
+      "vehicle_loss": 0.9147017300128937,
+      "vehicle_mae": 0.7009410828351974,
+      "vehicle_rmse": 0.9526828408241272,
+      "segment_loss": 0.9795133665204048,
+      "segment_mae": 0.7998938351869583,
+      "segment_rmse": 0.9458541065454483,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.2630875825881958,
+      "vehicle_loss": 0.8889989852905273,
+      "vehicle_mae": 0.6960212111473083,
+      "vehicle_rmse": 0.9419954895973206,
+      "segment_loss": 1.2469619274139405,
+      "segment_mae": 0.9152629971504211,
+      "segment_rmse": 1.1071163177490235,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 12,
+    "train": {
+      "loss": 1.150066089630127,
+      "vehicle_loss": 0.9069497287273407,
+      "vehicle_mae": 0.6978435486555099,
+      "vehicle_rmse": 0.950551238656044,
+      "segment_loss": 0.8103878349065781,
+      "segment_mae": 0.7112338423728943,
+      "segment_rmse": 0.8728339746594429,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.301078486442566,
+      "vehicle_loss": 0.9424244046211243,
+      "vehicle_mae": 0.6728076577186585,
+      "vehicle_rmse": 0.9687323689460754,
+      "segment_loss": 1.19551362991333,
+      "segment_mae": 0.9453378438949585,
+      "segment_rmse": 1.0791743636131286,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 13,
+    "train": {
+      "loss": 1.174772521853447,
+      "vehicle_loss": 0.8843935370445252,
+      "vehicle_mae": 0.6999546021223069,
+      "vehicle_rmse": 0.9394263833761215,
+      "segment_loss": 0.9679298788309098,
+      "segment_mae": 0.8010293751955032,
+      "segment_rmse": 0.9471438556909562,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.0294363737106322,
+      "vehicle_loss": 0.7311509847640991,
+      "vehicle_mae": 0.6394994139671326,
+      "vehicle_rmse": 0.8548421263694763,
+      "segment_loss": 0.9942845642566681,
+      "segment_mae": 0.7666205763816833,
+      "segment_rmse": 0.9777771234512329,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 14,
+    "train": {
+      "loss": 1.0590960294008256,
+      "vehicle_loss": 0.8080760687589645,
+      "vehicle_mae": 0.6704290330410003,
+      "vehicle_rmse": 0.8979823887348175,
+      "segment_loss": 0.8367331728339196,
+      "segment_mae": 0.7489974781870842,
+      "segment_rmse": 0.8947242379188538,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.128289234638214,
+      "vehicle_loss": 0.7807723164558411,
+      "vehicle_mae": 0.6507697463035583,
+      "vehicle_rmse": 0.8833572864532471,
+      "segment_loss": 1.1583897113800048,
+      "segment_mae": 0.8693552494049073,
+      "segment_rmse": 1.049433994293213,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 15,
+    "train": {
+      "loss": 1.1536816656589508,
+      "vehicle_loss": 0.8467833995819092,
+      "vehicle_mae": 0.6809887766838074,
+      "vehicle_rmse": 0.9187109231948852,
+      "segment_loss": 1.0229941964149476,
+      "segment_mae": 0.795301328599453,
+      "segment_rmse": 0.9685885041952134,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.125944983959198,
+      "vehicle_loss": 0.7502361297607422,
+      "vehicle_mae": 0.6469616889953613,
+      "vehicle_rmse": 0.8658444285392761,
+      "segment_loss": 1.2523628056049347,
+      "segment_mae": 0.8457290887832641,
+      "segment_rmse": 1.056022047996521,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 16,
+    "train": {
+      "loss": 1.12206951379776,
+      "vehicle_loss": 0.7541397362947464,
+      "vehicle_mae": 0.6567994356155396,
+      "vehicle_rmse": 0.8676998555660248,
+      "segment_loss": 1.226432517170906,
+      "segment_mae": 0.8721026748418808,
+      "segment_rmse": 1.0672409981489182,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.9276419639587403,
+      "vehicle_loss": 0.8085687518119812,
+      "vehicle_mae": 0.6292184114456176,
+      "vehicle_rmse": 0.8974090933799743,
+      "segment_loss": 3.730243945121765,
+      "segment_mae": 1.6076639413833618,
+      "segment_rmse": 1.8939146280288697,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 17,
+    "train": {
+      "loss": 1.255756714940071,
+      "vehicle_loss": 0.8239982485771179,
+      "vehicle_mae": 0.6813863933086395,
+      "vehicle_rmse": 0.9075300693511963,
+      "segment_loss": 1.439194843173027,
+      "segment_mae": 0.842683932185173,
+      "segment_rmse": 1.0895173847675323,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 0.9248154163360596,
+      "vehicle_loss": 0.6551838159561157,
+      "vehicle_mae": 0.5922136187553406,
+      "vehicle_rmse": 0.8089505553245544,
+      "segment_loss": 0.8987720251083374,
+      "segment_mae": 0.7218403816223145,
+      "segment_rmse": 0.9315282225608825,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 18,
+    "train": {
+      "loss": 1.2826854199171067,
+      "vehicle_loss": 0.7657291054725647,
+      "vehicle_mae": 0.6477827697992324,
+      "vehicle_rmse": 0.8741928666830063,
+      "segment_loss": 1.7231876492500304,
+      "segment_mae": 1.0080147087574005,
+      "segment_rmse": 1.2193661123514175,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.0989089965820313,
+      "vehicle_loss": 0.7192548751831055,
+      "vehicle_mae": 0.604214894771576,
+      "vehicle_rmse": 0.8478950142860413,
+      "segment_loss": 1.2655137062072754,
+      "segment_mae": 0.9009186387062073,
+      "segment_rmse": 1.080380630493164,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 19,
+    "train": {
+      "loss": 1.0956345200538635,
+      "vehicle_loss": 0.8288314819335938,
+      "vehicle_mae": 0.6766134589910507,
+      "vehicle_rmse": 0.9095578342676163,
+      "segment_loss": 0.8893434792757035,
+      "segment_mae": 0.7854865431785584,
+      "segment_rmse": 0.9326940029859543,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.0074575304985047,
+      "vehicle_loss": 0.6332838535308838,
+      "vehicle_mae": 0.5642459273338318,
+      "vehicle_rmse": 0.7950955033302307,
+      "segment_loss": 1.2472455859184266,
+      "segment_mae": 0.8601093888282776,
+      "segment_rmse": 1.0890767574310303,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 20,
+    "train": {
+      "loss": 0.9847673237323761,
+      "vehicle_loss": 0.7507027208805084,
+      "vehicle_mae": 0.6491736352443696,
+      "vehicle_rmse": 0.8652772545814514,
+      "segment_loss": 0.7802153170108795,
+      "segment_mae": 0.7026248842477798,
+      "segment_rmse": 0.8452617764472962,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 0.9065561413764953,
+      "vehicle_loss": 0.6018470168113709,
+      "vehicle_mae": 0.5712808966636658,
+      "vehicle_rmse": 0.7757561206817627,
+      "segment_loss": 1.015697032213211,
+      "segment_mae": 0.735620528459549,
+      "segment_rmse": 0.9821966409683227,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 21,
+    "train": {
+      "loss": 1.0203123927116393,
+      "vehicle_loss": 0.7794312834739685,
+      "vehicle_mae": 0.650556030869484,
+      "vehicle_rmse": 0.8815314203500748,
+      "segment_loss": 0.802937027812004,
+      "segment_mae": 0.7324581354856491,
+      "segment_rmse": 0.8801394701004028,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.0443429589271545,
+      "vehicle_loss": 0.6608355283737183,
+      "vehicle_mae": 0.5909887552261353,
+      "vehicle_rmse": 0.8124542355537414,
+      "segment_loss": 1.2783580422401428,
+      "segment_mae": 0.8932125806808472,
+      "segment_rmse": 1.1057027935981751,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 22,
+    "train": {
+      "loss": 0.9932850539684296,
+      "vehicle_loss": 0.7483047604560852,
+      "vehicle_mae": 0.6504531741142273,
+      "vehicle_rmse": 0.8642936736345291,
+      "segment_loss": 0.8166009038686752,
+      "segment_mae": 0.728181491792202,
+      "segment_rmse": 0.8516283065080643,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.080313014984131,
+      "vehicle_loss": 0.7136150121688842,
+      "vehicle_mae": 0.5896095037460327,
+      "vehicle_rmse": 0.8437103986740112,
+      "segment_loss": 1.2223266243934632,
+      "segment_mae": 0.8796858787536621,
+      "segment_rmse": 1.0947713136672974,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 23,
+    "train": {
+      "loss": 1.008574965596199,
+      "vehicle_loss": 0.7428953230381012,
+      "vehicle_mae": 0.6319696485996247,
+      "vehicle_rmse": 0.8609546065330506,
+      "segment_loss": 0.8855987876653671,
+      "segment_mae": 0.7620673686265945,
+      "segment_rmse": 0.9164822399616241,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.0451565027236938,
+      "vehicle_loss": 0.675778067111969,
+      "vehicle_mae": 0.5626346945762635,
+      "vehicle_rmse": 0.8208666324615479,
+      "segment_loss": 1.231261396408081,
+      "segment_mae": 0.9525442361831665,
+      "segment_rmse": 1.0900058269500732,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 24,
+    "train": {
+      "loss": 0.9788263112306594,
+      "vehicle_loss": 0.7255032330751419,
+      "vehicle_mae": 0.6320298373699188,
+      "vehicle_rmse": 0.8507063090801239,
+      "segment_loss": 0.8444102398643736,
+      "segment_mae": 0.7025225795805454,
+      "segment_rmse": 0.8412974871695041,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.009548842906952,
+      "vehicle_loss": 0.7174160957336426,
+      "vehicle_mae": 0.5832001686096191,
+      "vehicle_rmse": 0.84594566822052,
+      "segment_loss": 0.9737757205963135,
+      "segment_mae": 0.7533219218254089,
+      "segment_rmse": 0.9604496717453003,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 25,
+    "train": {
+      "loss": 1.0218663543462754,
+      "vehicle_loss": 0.7437723696231842,
+      "vehicle_mae": 0.6331839293241501,
+      "vehicle_rmse": 0.8607349932193756,
+      "segment_loss": 0.926979911327362,
+      "segment_mae": 0.7771030515432358,
+      "segment_rmse": 0.9360643744468689,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.0250790238380432,
+      "vehicle_loss": 0.7545839667320251,
+      "vehicle_mae": 0.6022300958633423,
+      "vehicle_rmse": 0.8681372284889222,
+      "segment_loss": 0.9016501545906067,
+      "segment_mae": 0.8066255211830139,
+      "segment_rmse": 0.9319058537483216,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 26,
+    "train": {
+      "loss": 0.9126241326332092,
+      "vehicle_loss": 0.6664638012647629,
+      "vehicle_mae": 0.6086928367614746,
+      "vehicle_rmse": 0.8151898682117462,
+      "segment_loss": 0.8205343961715699,
+      "segment_mae": 0.7634861588478088,
+      "segment_rmse": 0.8635887503623962,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 0.9838090896606445,
+      "vehicle_loss": 0.6955241203308106,
+      "vehicle_mae": 0.5936530232429504,
+      "vehicle_rmse": 0.8339609146118164,
+      "segment_loss": 0.9609498500823974,
+      "segment_mae": 0.8132602334022522,
+      "segment_rmse": 0.9773211479187012,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 27,
+    "train": {
+      "loss": 0.954919621348381,
+      "vehicle_loss": 0.6965571522712708,
+      "vehicle_mae": 0.6086280435323715,
+      "vehicle_rmse": 0.8332364141941071,
+      "segment_loss": 0.8612082123756408,
+      "segment_mae": 0.7459959670901298,
+      "segment_rmse": 0.9036368221044541,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 0.9366358757019043,
+      "vehicle_loss": 0.6418981552124023,
+      "vehicle_mae": 0.575651204586029,
+      "vehicle_rmse": 0.8007765889167786,
+      "segment_loss": 0.9824590444564819,
+      "segment_mae": 0.8325911283493042,
+      "segment_rmse": 0.9700156569480896,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 28,
+    "train": {
+      "loss": 0.9344286113977432,
+      "vehicle_loss": 0.6907942324876786,
+      "vehicle_mae": 0.6113054752349854,
+      "vehicle_rmse": 0.8297122240066528,
+      "segment_loss": 0.8121145501732826,
+      "segment_mae": 0.7249217122793198,
+      "segment_rmse": 0.8846728533506394,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.0771225810050964,
+      "vehicle_loss": 0.7058397173881531,
+      "vehicle_mae": 0.5780297160148621,
+      "vehicle_rmse": 0.8328100085258484,
+      "segment_loss": 1.2376094460487366,
+      "segment_mae": 0.8256927371025086,
+      "segment_rmse": 1.071260941028595,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 29,
+    "train": {
+      "loss": 0.9586367815732956,
+      "vehicle_loss": 0.7206400752067565,
+      "vehicle_mae": 0.6050676703453064,
+      "vehicle_rmse": 0.8447643250226975,
+      "segment_loss": 0.7933222964406014,
+      "segment_mae": 0.7087389558553696,
+      "segment_rmse": 0.8405400335788726,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.0718210220336915,
+      "vehicle_loss": 0.6812001228332519,
+      "vehicle_mae": 0.5954193115234375,
+      "vehicle_rmse": 0.824666428565979,
+      "segment_loss": 1.302069652080536,
+      "segment_mae": 0.9670226573944092,
+      "segment_rmse": 1.1123670578002929,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 30,
+    "train": {
+      "loss": 0.949157851934433,
+      "vehicle_loss": 0.7088872849941253,
+      "vehicle_mae": 0.6086557567119598,
+      "vehicle_rmse": 0.8411402881145478,
+      "segment_loss": 0.8009018480777741,
+      "segment_mae": 0.7100872248411179,
+      "segment_rmse": 0.8669358909130096,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.0889914989471436,
+      "vehicle_loss": 0.796821677684784,
+      "vehicle_mae": 0.5879661202430725,
+      "vehicle_rmse": 0.8899617314338684,
+      "segment_loss": 0.9738994717597962,
+      "segment_mae": 0.8047019004821777,
+      "segment_rmse": 0.9578338384628295,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 31,
+    "train": {
+      "loss": 1.0168593138456345,
+      "vehicle_loss": 0.7501678019762039,
+      "vehicle_mae": 0.6177110940217971,
+      "vehicle_rmse": 0.8629565954208374,
+      "segment_loss": 0.8889716781675816,
+      "segment_mae": 0.7719879895448685,
+      "segment_rmse": 0.9148674756288528,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 0.9423022389411926,
+      "vehicle_loss": 0.7425134420394898,
+      "vehicle_mae": 0.5841703653335572,
+      "vehicle_rmse": 0.8610136389732361,
+      "segment_loss": 0.6659626007080078,
+      "segment_mae": 0.6576003193855285,
+      "segment_rmse": 0.8088353276252747,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 32,
+    "train": {
+      "loss": 0.9008842647075653,
+      "vehicle_loss": 0.6718660354614258,
+      "vehicle_mae": 0.5953408271074295,
+      "vehicle_rmse": 0.817589521408081,
+      "segment_loss": 0.7633940875530243,
+      "segment_mae": 0.7136612385511398,
+      "segment_rmse": 0.8598545998334884,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 0.8147872686386108,
+      "vehicle_loss": 0.5762630701065063,
+      "vehicle_mae": 0.5540318012237548,
+      "vehicle_rmse": 0.7590107202529908,
+      "segment_loss": 0.7950806379318237,
+      "segment_mae": 0.7764982581138611,
+      "segment_rmse": 0.8823601603507996,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 33,
+    "train": {
+      "loss": 0.884570837020874,
+      "vehicle_loss": 0.6768590256571769,
+      "vehicle_mae": 0.5936533838510514,
+      "vehicle_rmse": 0.8199518412351608,
+      "segment_loss": 0.6923726636916399,
+      "segment_mae": 0.6681320533156395,
+      "segment_rmse": 0.8030348062515259,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 0.8323590993881226,
+      "vehicle_loss": 0.6139385104179382,
+      "vehicle_mae": 0.5737389206886292,
+      "vehicle_rmse": 0.7833434224128724,
+      "segment_loss": 0.7280686438083649,
+      "segment_mae": 0.6600446105003357,
+      "segment_rmse": 0.836234176158905,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 34,
+    "train": {
+      "loss": 0.9503819167613983,
+      "vehicle_loss": 0.6199823051691056,
+      "vehicle_mae": 0.5799138069152832,
+      "vehicle_rmse": 0.7861884564161301,
+      "segment_loss": 1.1013320043683053,
+      "segment_mae": 0.802811124920845,
+      "segment_rmse": 0.9880313992500305,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 0.9703442096710205,
+      "vehicle_loss": 0.6971553444862366,
+      "vehicle_mae": 0.5959495306015015,
+      "vehicle_rmse": 0.8332998394966126,
+      "segment_loss": 0.9106296062469482,
+      "segment_mae": 0.777864408493042,
+      "segment_rmse": 0.9373064041137695,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 35,
+    "train": {
+      "loss": 0.9437092244625092,
+      "vehicle_loss": 0.6991751939058304,
+      "vehicle_mae": 0.60909803211689,
+      "vehicle_rmse": 0.8336679488420486,
+      "segment_loss": 0.8151134181767702,
+      "segment_mae": 0.7377989418804646,
+      "segment_rmse": 0.8683270558714866,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.108158814907074,
+      "vehicle_loss": 0.7789382696151733,
+      "vehicle_mae": 0.608655321598053,
+      "vehicle_rmse": 0.8813995599746705,
+      "segment_loss": 1.0974018037319184,
+      "segment_mae": 0.8290875673294067,
+      "segment_rmse": 1.0008928775787354,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 36,
+    "train": {
+      "loss": 0.7825933009386062,
+      "vehicle_loss": 0.604481652379036,
+      "vehicle_mae": 0.567661714553833,
+      "vehicle_rmse": 0.7761801689863205,
+      "segment_loss": 0.5937054783105851,
+      "segment_mae": 0.5836115896701812,
+      "segment_rmse": 0.6781018063426018,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 0.9118047475814819,
+      "vehicle_loss": 0.6531894207000732,
+      "vehicle_mae": 0.5718973875045776,
+      "vehicle_rmse": 0.8079377174377441,
+      "segment_loss": 0.862051036953926,
+      "segment_mae": 0.7208387970924377,
+      "segment_rmse": 0.8844536662101745,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 37,
+    "train": {
+      "loss": 0.8891371011734008,
+      "vehicle_loss": 0.6493886888027192,
+      "vehicle_mae": 0.5869406163692474,
+      "vehicle_rmse": 0.8033042699098587,
+      "segment_loss": 0.7991613179445267,
+      "segment_mae": 0.7242094486951828,
+      "segment_rmse": 0.8711649104952812,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 0.8302051305770874,
+      "vehicle_loss": 0.6309151291847229,
+      "vehicle_mae": 0.5696909546852111,
+      "vehicle_rmse": 0.7941601634025574,
+      "segment_loss": 0.6642999231815339,
+      "segment_mae": 0.6442449510097503,
+      "segment_rmse": 0.7827417373657226,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 38,
+    "train": {
+      "loss": 0.8184265643358231,
+      "vehicle_loss": 0.6317884936928749,
+      "vehicle_mae": 0.5816141396760941,
+      "vehicle_rmse": 0.791367357969284,
+      "segment_loss": 0.6221268414810766,
+      "segment_mae": 0.604000923037529,
+      "segment_rmse": 0.7200061082839966,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 0.9641315579414368,
+      "vehicle_loss": 0.7272283792495727,
+      "vehicle_mae": 0.5853296399116517,
+      "vehicle_rmse": 0.8503303170204163,
+      "segment_loss": 0.7896772623062134,
+      "segment_mae": 0.7572476983070373,
+      "segment_rmse": 0.8806289315223694,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 39,
+    "train": {
+      "loss": 0.8922102391719818,
+      "vehicle_loss": 0.6856474608182908,
+      "vehicle_mae": 0.5838598817586899,
+      "vehicle_rmse": 0.824955227971077,
+      "segment_loss": 0.6885425735265016,
+      "segment_mae": 0.6737389653921128,
+      "segment_rmse": 0.8023429661989212,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 0.8558878064155578,
+      "vehicle_loss": 0.5508374154567719,
+      "vehicle_mae": 0.5250198721885682,
+      "vehicle_rmse": 0.7415466070175171,
+      "segment_loss": 1.0168345630168916,
+      "segment_mae": 0.7893923878669739,
+      "segment_rmse": 0.9817702174186707,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 40,
+    "train": {
+      "loss": 0.838827595114708,
+      "vehicle_loss": 0.6405248761177063,
+      "vehicle_mae": 0.5821699321269989,
+      "vehicle_rmse": 0.799154081940651,
+      "segment_loss": 0.661009056866169,
+      "segment_mae": 0.6579432427883148,
+      "segment_rmse": 0.7890522658824921,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 0.8135960102081299,
+      "vehicle_loss": 0.6336844086647033,
+      "vehicle_mae": 0.5578611731529236,
+      "vehicle_rmse": 0.7959672927856445,
+      "segment_loss": 0.5997053623199463,
+      "segment_mae": 0.6401136875152588,
+      "segment_rmse": 0.7477458775043487,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 41,
+    "train": {
+      "loss": 0.8498922556638717,
+      "vehicle_loss": 0.6353824883699417,
+      "vehicle_mae": 0.5708134680986404,
+      "vehicle_rmse": 0.7957951962947846,
+      "segment_loss": 0.7150325283408165,
+      "segment_mae": 0.7013034150004387,
+      "segment_rmse": 0.8296277225017548,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 0.780477774143219,
+      "vehicle_loss": 0.5413585245609284,
+      "vehicle_mae": 0.5248652577400208,
+      "vehicle_rmse": 0.7353555560112,
+      "segment_loss": 0.7970641493797302,
+      "segment_mae": 0.728661060333252,
+      "segment_rmse": 0.8504502654075623,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 42,
+    "train": {
+      "loss": 0.8194708243012429,
+      "vehicle_loss": 0.6258896470069886,
+      "vehicle_mae": 0.5502869382500648,
+      "vehicle_rmse": 0.7807472944259644,
+      "segment_loss": 0.6452706001931802,
+      "segment_mae": 0.65346739590168,
+      "segment_rmse": 0.7419240295886993,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 0.6845438718795777,
+      "vehicle_loss": 0.4958134591579437,
+      "vehicle_mae": 0.5087622761726379,
+      "vehicle_rmse": 0.7039966106414794,
+      "segment_loss": 0.6291013419628143,
+      "segment_mae": 0.6346669614315033,
+      "segment_rmse": 0.7751797437667847,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 43,
+    "train": {
+      "loss": 0.8615221202373504,
+      "vehicle_loss": 0.6308704406023026,
+      "vehicle_mae": 0.5642311736941338,
+      "vehicle_rmse": 0.7883145362138748,
+      "segment_loss": 0.76883887918666,
+      "segment_mae": 0.6973796471953392,
+      "segment_rmse": 0.8371011584997177,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 1.0072104454040527,
+      "vehicle_loss": 0.6238834142684937,
+      "vehicle_mae": 0.5366580605506897,
+      "vehicle_rmse": 0.7840882062911987,
+      "segment_loss": 1.2777567386627198,
+      "segment_mae": 0.9342684984207154,
+      "segment_rmse": 1.1257133960723877,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 44,
+    "train": {
+      "loss": 0.8927536725997924,
+      "vehicle_loss": 0.5903141245245933,
+      "vehicle_mae": 0.5525453880429267,
+      "vehicle_rmse": 0.7649398148059845,
+      "segment_loss": 1.0081318149343133,
+      "segment_mae": 0.7458533495664597,
+      "segment_rmse": 0.8593781739473343,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 0.8652634620666504,
+      "vehicle_loss": 0.5383365869522094,
+      "vehicle_mae": 0.5249919652938843,
+      "vehicle_rmse": 0.7328318595886231,
+      "segment_loss": 1.089756226539612,
+      "segment_mae": 0.8471652388572692,
+      "segment_rmse": 0.9753677845001221,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 45,
+    "train": {
+      "loss": 0.9710039556026459,
+      "vehicle_loss": 0.7830368131399155,
+      "vehicle_mae": 0.5691875904798508,
+      "vehicle_rmse": 0.8565888643264771,
+      "segment_loss": 0.6265570731833577,
+      "segment_mae": 0.5740453738719224,
+      "segment_rmse": 0.6879158545285463,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 0.9058627605438232,
+      "vehicle_loss": 0.6130292296409607,
+      "vehicle_mae": 0.5441639661788941,
+      "vehicle_rmse": 0.7809057593345642,
+      "segment_loss": 0.9761117577552796,
+      "segment_mae": 0.8146584868431092,
+      "segment_rmse": 0.9607087254524231,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 46,
+    "train": {
+      "loss": 0.794751626253128,
+      "vehicle_loss": 0.6078125983476639,
+      "vehicle_mae": 0.558607143163681,
+      "vehicle_rmse": 0.7787899762392044,
+      "segment_loss": 0.6231300719082355,
+      "segment_mae": 0.636120742559433,
+      "segment_rmse": 0.7707727774977684,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 0.6864870309829711,
+      "vehicle_loss": 0.4773568570613861,
+      "vehicle_mae": 0.4933772921562195,
+      "vehicle_rmse": 0.6907699823379516,
+      "segment_loss": 0.6971005499362946,
+      "segment_mae": 0.6123164832592011,
+      "segment_rmse": 0.7967480301856995,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 47,
+    "train": {
+      "loss": 0.8489282339811325,
+      "vehicle_loss": 0.6073694556951523,
+      "vehicle_mae": 0.5564619243144989,
+      "vehicle_rmse": 0.7786252707242965,
+      "segment_loss": 0.8051958799362182,
+      "segment_mae": 0.6962899297475815,
+      "segment_rmse": 0.8439768061041832,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 0.7668168425559998,
+      "vehicle_loss": 0.5877759695053101,
+      "vehicle_mae": 0.5159536123275756,
+      "vehicle_rmse": 0.7639601588249206,
+      "segment_loss": 0.5968028426170349,
+      "segment_mae": 0.6232432425022125,
+      "segment_rmse": 0.7663090705871582,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 48,
+    "train": {
+      "loss": 0.7053629487752915,
+      "vehicle_loss": 0.5521094486117363,
+      "vehicle_mae": 0.5281010344624519,
+      "vehicle_rmse": 0.7415125250816346,
+      "segment_loss": 0.5108449946157634,
+      "segment_mae": 0.5589377008378505,
+      "segment_rmse": 0.6718823954463005,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 0.7236733913421631,
+      "vehicle_loss": 0.5506564319133759,
+      "vehicle_mae": 0.5112416625022889,
+      "vehicle_rmse": 0.7408379673957824,
+      "segment_loss": 0.5767231523990631,
+      "segment_mae": 0.6065187931060791,
+      "segment_rmse": 0.7459702730178833,
+      "n_snapshots": 5
+    }
+  },
+  {
+    "epoch": 49,
+    "train": {
+      "loss": 1.0713129937648773,
+      "vehicle_loss": 0.6939978927373887,
+      "vehicle_mae": 0.563362044095993,
+      "vehicle_rmse": 0.8258650600910187,
+      "segment_loss": 1.2577169969677926,
+      "segment_mae": 0.8291034191846848,
+      "segment_rmse": 1.0076187774538994,
+      "n_snapshots": 20
+    },
+    "val": {
+      "loss": 0.6718942403793335,
+      "vehicle_loss": 0.5250670909881592,
+      "vehicle_mae": 0.5009417712688446,
+      "vehicle_rmse": 0.7232885956764221,
+      "segment_loss": 0.4894238352775574,
+      "segment_mae": 0.5145714759826661,
+      "segment_rmse": 0.673751175403595,
+      "n_snapshots": 5
+    }
+  }
+]

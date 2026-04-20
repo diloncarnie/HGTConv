@@ -175,13 +175,15 @@ class HGTConv(MessagePassing):
 
         # Iterate over node types:
         res_dict = {}
-        for node_type, out in agg_out_dict.items():
-            out = a_dict[node_type]
-
-            if out.size(-1) == x_dict[node_type].size(-1):
-                alpha = self.skip[node_type].sigmoid()
-                out = alpha * out + (1 - alpha) * x_dict[node_type]
-            res_dict[node_type] = out
+        for node_type in x_dict.keys():
+            if node_type in a_dict:
+                out = a_dict[node_type]
+                if out.size(-1) == x_dict[node_type].size(-1):
+                    alpha = self.skip[node_type].sigmoid()
+                    out = alpha * out + (1 - alpha) * x_dict[node_type]
+                res_dict[node_type] = out
+            else:
+                res_dict[node_type] = x_dict[node_type]
 
         return res_dict
 
@@ -268,7 +270,10 @@ class HGT(torch.nn.Module):
                 for group in custom_order:
                     subset_edges = {etype: edge_index_dict[etype] for etype in group}
                     subset_times = {etype: edge_time_dict.get(etype) for etype in group} if edge_time_dict is not None else None
+                    
+                    # conv returns all nodes (pass-through), but we only want to update dst_types in this group
                     new_nodes = conv(x_dict, subset_edges, subset_times)
+                    
                     dst_types = {etype[-1] for etype in group}
                     for node_type in dst_types:
                         if new_nodes.get(node_type) is not None:

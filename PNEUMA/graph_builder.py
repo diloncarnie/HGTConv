@@ -395,12 +395,23 @@ class PneumaSnapshotBuilder:
     # Episode loading
     # ------------------------------------------------------------------
 
+    def set_episode_data(self, time_groups: Dict, agg_data: Dict) -> None:
+        """Set pre-vectorized episode data."""
+        self._time_groups = time_groups
+        self._agg_times = agg_data['times']
+        self._agg_seg_idx = agg_data['seg_idx']
+        self._agg_feats = agg_data['feats']
+        self.reset_state()
+
     def load_episode(
         self,
         processed_df: pd.DataFrame,
         aggregated_df: pd.DataFrame,
-    ) -> None:
-        """Pre-process episode dataframes into highly optimised numpy arrays."""
+    ) -> Dict:
+        """
+        Pre-process episode dataframes into highly optimised numpy arrays.
+        Returns the vectorized data for caching/reuse.
+        """
         # 1. Vectorize processed trajectories
         df = processed_df.sort_values('time').reset_index(drop=True)
         
@@ -437,10 +448,10 @@ class PneumaSnapshotBuilder:
         df['__seg_idx'] = df['segment_id'].astype(str).map(seg_idx_map).fillna(0).astype(int)
         df['__feat_idx'] = np.arange(len(df))
 
-        self._time_groups = {}
+        time_groups = {}
         for t_bucket, group in df.groupby('time_bucket'):
             idx = group['__feat_idx'].values
-            self._time_groups[t_bucket] = {
+            time_groups[float(t_bucket)] = {
                 'track_ids': group['track_id'].values.astype(int),
                 'feats': feats[idx],
                 'seg_indices': group['__seg_idx'].values.tolist(),
@@ -463,11 +474,14 @@ class PneumaSnapshotBuilder:
         if self._seg_mean is not None:
             sm_feats = (sm_feats - self._seg_mean) / self._seg_std
 
-        self._agg_times = agg['timestamp'].values.astype(float)
-        self._agg_seg_idx = agg['__seg_idx'].values.astype(int)
-        self._agg_feats = sm_feats
+        agg_data = {
+            'times': agg['timestamp'].values.astype(float),
+            'seg_idx': agg['__seg_idx'].values.astype(int),
+            'feats': sm_feats
+        }
         
-        self.reset_state()
+        self.set_episode_data(time_groups, agg_data)
+        return {'time_groups': time_groups, 'agg_data': agg_data}
 
     def reset_state(self) -> None:
         """Resets the temporal memory tracking for a new sequential chunk."""

@@ -27,6 +27,7 @@ import os
 import random
 import sys
 import time
+import logging
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -49,57 +50,63 @@ from PNEUMA.pneuma_model import PneumaModel, PNEUMA_CUSTOM_ORDER
 # Configuration
 # ---------------------------------------------------------------------------
 
-SMOKE_TEST = False
+class Config:
+    SMOKE_TEST = False
 
-ROOT_DIR = Path(__file__).resolve().parent.parent   # HGTConv repo root
-PNEUMA_DIR = Path(__file__).resolve().parent        # PNEUMA/ package directory
+    ROOT_DIR = Path(__file__).resolve().parent.parent   # HGTConv repo root
+    PNEUMA_DIR = Path(__file__).resolve().parent        # PNEUMA/ package directory
 
-# --- Full-training paths ---
-# Each episode subfolder under DATA_DIR must contain:
-#   <foldername>_processed.csv, downsampled_aggregated_states.csv,
-#   osm_network.gpkg, segment_thresholds.json, controllers.json
-DATA_DIR      = str(PNEUMA_DIR / "data")
-TOPOLOGY_PATH = str(PNEUMA_DIR / "topological_adjacency.json")   # shared across episodes
+    # --- Full-training paths ---
+    DATA_DIR      = PNEUMA_DIR / "data"
+    TOPOLOGY_PATH = PNEUMA_DIR / "topological_adjacency.json"   # shared across episodes
+    STATS_PATH    = PNEUMA_DIR / "data" / "feature_stats.json"
 
-# Feature-normalisation stats cache (written once, reused thereafter)
-STATS_PATH    = str(PNEUMA_DIR / "data" / "feature_stats.json")
+    # --- Smoke-test paths ---
+    SMOKE_TOPOLOGY_PATH    = PNEUMA_DIR / "topological_adjacency.json"
+    SMOKE_GPKG_PATH        = ROOT_DIR / "osm_network.gpkg"
+    SMOKE_CONTROLLERS_PATH = ROOT_DIR / "controllers.json"
+    SMOKE_THRESHOLDS_PATH  = ROOT_DIR / "segment_thresholds.json"
+    SMOKE_PROC_PATH        = ROOT_DIR / "example_processed.csv"
+    SMOKE_AGG_PATH         = ROOT_DIR / "example_aggregated_states.csv"
 
-# --- Smoke-test paths (root-level example files) ---
-# These are used when SMOKE_TEST = True and do not require the episode folder layout.
-SMOKE_TOPOLOGY_PATH    = str(ROOT_DIR / "topological_adjacency.json")
-SMOKE_GPKG_PATH        = str(ROOT_DIR / "osm_network.gpkg")
-SMOKE_CONTROLLERS_PATH = str(ROOT_DIR / "controllers.json")
-SMOKE_THRESHOLDS_PATH  = str(ROOT_DIR / "segment_thresholds.json")
-SMOKE_PROC_PATH        = str(ROOT_DIR / "example_processed.csv")
-SMOKE_AGG_PATH         = str(ROOT_DIR / "example_aggregated_states.csv")
+    CHECKPOINT_DIR = PNEUMA_DIR / "checkpoints"
 
-CHECKPOINT_DIR = str(PNEUMA_DIR / "checkpoints")
+    # Model hyperparameters
+    HIDDEN_CHANNELS = 64
+    NUM_HEADS       = 2
+    NUM_LAYERS      = 2  # Increased default for HGT
+    DROPOUT         = 0.4
+    LAMBDA_V        = 1.0
+    LAMBDA_S        = 0.3
 
-# Model hyperparameters
-HIDDEN_CHANNELS = 64
-NUM_HEADS       = 2
-NUM_LAYERS      = 1
-DROPOUT         = 0.4
-LAMBDA_V        = 1.0
-LAMBDA_S        = 0.3
+    # Training hyperparameters
+    EPOCHS           = 50
+    LR               = 1e-3
+    WEIGHT_DECAY     = 1e-4
+    GRAD_ACCUM_STEPS = 32
+    TRAIN_FRAC       = 0.8
+    SEED             = 42
 
-# Training hyperparameters
-EPOCHS           = 50
-LR               = 1e-3
-WEIGHT_DECAY     = 1e-4
-GRAD_ACCUM_STEPS = 32   # accumulate gradients over this many snapshots
-TRAIN_FRAC       = 0.8  # set < 1.0 (e.g. 0.8) when you have multiple episodes
-SEED             = 42
+    # Chunk sampling hyperparameters
+    CHUNK_LENGTH     = 15
+    CHUNKS_PER_EPOCH = 3
+    WARMUP_STEPS     = 0
 
-# Chunk sampling hyperparameters
-CHUNK_LENGTH     = 30  # Number of consecutive snapshots to predict in a row
-CHUNKS_PER_EPOCH = 10   # Number of random sequences sampled per episode per epoch
+    # Sampling hyperparameters
+    USE_HGT_SAMPLING = False
+    HGT_HOPS         = 2
 
-# Sampling hyperparameters
-USE_HGT_SAMPLING = False  # Set to True to enable budget-based HGT subgraph sampling
-HGT_HOPS         = 2
+def setup_logging():
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s [%(levelname)s] %(message)s',
+        handlers=[
+            logging.StreamHandler(sys.stdout)
+        ]
+    )
+    return logging.getLogger(__name__)
 
-
+logger = setup_logging()
 
 # ---------------------------------------------------------------------------
 # Train / val epoch functions
@@ -110,45 +117,41 @@ def train_epoch(
     episodes: List[PneumaEpisode],
     optimizer: torch.optim.Optimizer,
     device: torch.device,
-    grad_accum_steps: int = GRAD_ACCUM_STEPS,
+    grad_accum_steps: int = Config.GRAD_ACCUM_STEPS,
 ) -> Dict[str, float]:
     """
-    Run one training pass over a list of PneumaEpisode objects.
-    Gradients are accumulated over ``grad_accum_steps`` snapshots before each step.
-
-    Returns averaged metrics across all snapshots.
+    Run one training pass. Returns averaged metrics across all snapshots.
     """
     model.train()
 
-    total_loss   = 0.0
-    total_v_loss = 0.0
-    total_s_loss = 0.0
+    totals = {
+        'loss': 0.0, 'vehicle_loss': 0.0, 'vehicle_mae': 0.0, 'vehicle_rmse': 0.0,
+        'segment_loss': 0.0, 'segment_mae': 0.0, 'segment_rmse': 0.0
+    }
     n_snapshots  = 0
     accum_count  = 0
 
     optimizer.zero_grad()
 
-    # Shuffle episode order within epoch
     ep_order = list(episodes)
     random.shuffle(ep_order)
 
     for episode in ep_order:
-        pbar = tqdm(episode, desc="Training Snaps", leave=False)
-        for snapshot, targets in pbar:
+        for snapshot, targets in episode:
             snapshot = snapshot.to(device)
 
             preds = model(snapshot)
             loss, metrics = model.compute_loss(preds, targets)
 
-            # Scale loss by accumulation factor so gradients average out.
-            # Skip if no gradient targets exist this step (empty masks).
             if loss.requires_grad:
                 (loss / grad_accum_steps).backward()
                 accum_count += 1
 
-            total_loss   += float(loss)
-            total_v_loss += metrics['vehicle_loss']
-            total_s_loss += metrics['segment_loss']
+            for k in totals:
+                if k == 'loss':
+                    totals[k] += float(loss)
+                else:
+                    totals[k] += metrics[k]
             n_snapshots  += 1
 
             if accum_count >= grad_accum_steps:
@@ -157,19 +160,15 @@ def train_epoch(
                 optimizer.zero_grad()
                 accum_count = 0
 
-    # Flush any remaining accumulated gradients
     if accum_count > 0:
         torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
         optimizer.step()
         optimizer.zero_grad()
 
     n = max(n_snapshots, 1)
-    return {
-        'loss':         total_loss  / n,
-        'vehicle_loss': total_v_loss / n,
-        'segment_loss': total_s_loss / n,
-        'n_snapshots':  n_snapshots,
-    }
+    res = {k: v / n for k, v in totals.items()}
+    res['n_snapshots'] = n_snapshots
+    return res
 
 
 @torch.no_grad()
@@ -178,40 +177,130 @@ def val_epoch(
     episodes: List[PneumaEpisode],
     device: torch.device,
 ) -> Dict[str, float]:
-    """Run one validation pass. No gradient accumulation."""
+    """Run one validation pass."""
     model.eval()
 
-    total_loss   = 0.0
-    total_v_loss = 0.0
-    total_s_loss = 0.0
+    totals = {
+        'loss': 0.0, 'vehicle_loss': 0.0, 'vehicle_mae': 0.0, 'vehicle_rmse': 0.0,
+        'segment_loss': 0.0, 'segment_mae': 0.0, 'segment_rmse': 0.0
+    }
     n_snapshots  = 0
 
     for episode in episodes:
-        pbar = tqdm(episode, desc="Validation Snaps", leave=False)
-        for snapshot, targets in pbar:
+        for snapshot, targets in episode:
             snapshot = snapshot.to(device)
             preds = model(snapshot)
             loss, metrics = model.compute_loss(preds, targets)
 
-            total_loss   += float(loss)
-            total_v_loss += metrics['vehicle_loss']
-            total_s_loss += metrics['segment_loss']
+            totals['loss'] += float(loss)
+            for k in metrics:
+                totals[k] += metrics[k]
             n_snapshots  += 1
 
     n = max(n_snapshots, 1)
-    return {
-        'loss':         total_loss  / n,
-        'vehicle_loss': total_v_loss / n,
-        'segment_loss': total_s_loss / n,
-        'n_snapshots':  n_snapshots,
-    }
+    res = {k: v / n for k, v in totals.items()}
+    res['n_snapshots'] = n_snapshots
+    return res
 
 
-# ---------------------------------------------------------------------------
-# Main
-# ---------------------------------------------------------------------------
+@torch.no_grad()
+def evaluate_model(
+    model: PneumaModel,
+    episodes: List[PneumaEpisode],
+    device: torch.device,
+) -> Dict[str, List[float]]:
+    """
+    Detailed evaluation to collect Actual vs Predicted values for segments.
+    Used for scatter plots and error distribution.
+    """
+    model.eval()
+    actuals = []
+    preds_list = []
+
+    for episode in episodes:
+        for snapshot, targets in episode:
+            snapshot = snapshot.to(device)
+            preds = model(snapshot)
+            
+            if 'segment' in preds:
+                seg_idx = targets['segment_mask_idx'].to(device)
+                if seg_idx.shape[0] > 0:
+                    s_pred = preds['segment'][seg_idx].view(-1).cpu().tolist()
+                    s_tgt = targets['segment_feats'].to(device).view(-1).cpu().tolist()
+                    actuals.extend(s_tgt)
+                    preds_list.extend(s_pred)
+
+    return {'actual': actuals, 'predicted': preds_list}
 
 def main() -> None:
+    # -----------------------------------------------------------------------
+    # Build episodes
+    # -----------------------------------------------------------------------
+
+    if Config.SMOKE_TEST:
+        # ---- Smoke test: use root-level example files ----
+        logger.info("SMOKE TEST mode: using root-level example files as a single episode.")
+        logger.info("Building static graph...")
+        t0 = time.time()
+        csv_stats = scan_segment_stats([str(Config.SMOKE_PROC_PATH)])
+        static_graph = PneumaStaticGraph(
+            str(Config.SMOKE_TOPOLOGY_PATH),
+            str(Config.SMOKE_GPKG_PATH),
+            str(Config.SMOKE_CONTROLLERS_PATH),
+            csv_stats,
+        )
+        logger.info(f"  Built in {time.time() - t0:.1f}s | "
+                    f"{static_graph.num_segments} segs, {static_graph.num_controllers} controllers")
+
+        # No feature normalisation in smoke test
+        train_episodes = [PneumaEpisode(str(Config.SMOKE_PROC_PATH), str(Config.SMOKE_AGG_PATH), static_graph, warmup_steps=Config.WARMUP_STEPS)]
+        val_episodes   = [PneumaEpisode(str(Config.SMOKE_PROC_PATH), str(Config.SMOKE_AGG_PATH), static_graph, warmup_steps=Config.WARMUP_STEPS)]
+
+    else:
+        # ---- Full training: per-episode folder layout ----
+        logger.info(f"Full training mode: scanning episode folders in {Config.DATA_DIR}")
+
+        # 1. Discover episodes and split into train/val
+        data_module = PneumaDataModule(
+            str(Config.DATA_DIR), str(Config.TOPOLOGY_PATH),
+            train_frac=Config.TRAIN_FRAC, seed=Config.SEED,
+            chunk_length=Config.CHUNK_LENGTH,
+            chunks_per_epoch=Config.CHUNKS_PER_EPOCH,
+            use_hgt_sampling=Config.USE_HGT_SAMPLING,
+            hgt_hops=Config.HGT_HOPS,
+        )
+
+        # 2. Pre-scan all episodes for segment static metadata (csv_stats)
+        logger.info("Pre-scanning episode CSVs for segment stats...")
+        t0 = time.time()
+        all_proc = data_module.get_all_proc_paths()
+        data_module.csv_stats = scan_segment_stats(all_proc)
+        logger.info(f"  Done in {time.time() - t0:.1f}s ({len(data_module.csv_stats)} segments)")
+
+        # 3. Compute (or load cached) feature normalisation statistics
+        stats_cache = Config.STATS_PATH
+        if stats_cache.exists():
+            with open(stats_cache) as f:
+                feature_stats = json.load(f)
+            logger.info(f"Loaded feature stats from {stats_cache}")
+        else:
+            train_proc, train_agg = data_module.get_train_proc_agg_paths()
+            logger.info(f"Computing feature stats from {len(train_proc)} training episodes...")
+            t0 = time.time()
+            feature_stats = precompute_feature_stats(train_proc, train_agg)
+            stats_cache.parent.mkdir(parents=True, exist_ok=True)
+            with open(stats_cache, 'w') as f:
+                json.dump(feature_stats, f, indent=2)
+            logger.info(f"  Done in {time.time() - t0:.1f}s — saved to {stats_cache}")
+        data_module.feature_stats = feature_stats
+
+        # 4. Materialise episode objects (builds per-episode static graphs)
+        logger.info("Building per-episode static graphs and loading episodes...")
+        t0 = time.time()
+        train_episodes = list(data_module.iter_train())
+        val_episodes   = list(data_module.iter_val())
+        logger.info(f"  Done in {time.time() - t0:.1f}s")
+
     # --- Device ---
     if torch.cuda.is_available():
         device = torch.device('cuda')
@@ -219,139 +308,95 @@ def main() -> None:
         device = torch.device('xpu')
     else:
         device = torch.device('cpu')
-    print(f"Device: {device}")
+    logger.info(f"Device: {device}")
 
-    # -----------------------------------------------------------------------
-    # Build episodes
-    # -----------------------------------------------------------------------
-
-    if SMOKE_TEST:
-        # ---- Smoke test: use root-level example files ----
-        print("SMOKE TEST mode: using root-level example files as a single episode.")
-        print("Building static graph...")
-        t0 = time.time()
-        csv_stats = scan_segment_stats([SMOKE_PROC_PATH])
-        static_graph = PneumaStaticGraph(
-            SMOKE_TOPOLOGY_PATH,
-            SMOKE_GPKG_PATH,
-            SMOKE_CONTROLLERS_PATH,
-            csv_stats,
-        )
-        print(f"  Built in {time.time() - t0:.1f}s | "
-              f"{static_graph.num_segments} segs, {static_graph.num_controllers} controllers")
-
-        # No feature normalisation in smoke test
-        train_episodes = [PneumaEpisode(SMOKE_PROC_PATH, SMOKE_AGG_PATH, static_graph)]
-        val_episodes   = [PneumaEpisode(SMOKE_PROC_PATH, SMOKE_AGG_PATH, static_graph)]
-
-    else:
-        # ---- Full training: per-episode folder layout ----
-        print(f"Full training mode: scanning episode folders in {DATA_DIR}")
-
-        # 1. Discover episodes and split into train/val
-        data_module = PneumaDataModule(
-            DATA_DIR, TOPOLOGY_PATH,
-            train_frac=TRAIN_FRAC, seed=SEED,
-            chunk_length=CHUNK_LENGTH,
-            chunks_per_epoch=CHUNKS_PER_EPOCH,
-            use_hgt_sampling=USE_HGT_SAMPLING,
-            hgt_hops=HGT_HOPS,
-        )
-
-        # 2. Pre-scan all episodes for segment static metadata (csv_stats)
-        print("Pre-scanning episode CSVs for segment stats...")
-        t0 = time.time()
-        all_proc = data_module.get_all_proc_paths()
-        data_module.csv_stats = scan_segment_stats(all_proc)
-        print(f"  Done in {time.time() - t0:.1f}s ({len(data_module.csv_stats)} segments)")
-
-        # 3. Compute (or load cached) feature normalisation statistics
-        stats_cache = Path(STATS_PATH)
-        if stats_cache.exists():
-            with open(stats_cache) as f:
-                feature_stats = json.load(f)
-            print(f"Loaded feature stats from {stats_cache}")
-        else:
-            train_proc, train_agg = data_module.get_train_proc_agg_paths()
-            print(f"Computing feature stats from {len(train_proc)} training episodes...")
-            t0 = time.time()
-            feature_stats = precompute_feature_stats(train_proc, train_agg)
-            stats_cache.parent.mkdir(parents=True, exist_ok=True)
-            with open(stats_cache, 'w') as f:
-                json.dump(feature_stats, f, indent=2)
-            print(f"  Done in {time.time() - t0:.1f}s — saved to {stats_cache}")
-        data_module.feature_stats = feature_stats
-
-        # 4. Materialise episode objects (builds per-episode static graphs)
-        print("Building per-episode static graphs and loading episodes...")
-        t0 = time.time()
-        train_episodes = list(data_module.iter_train())
-        val_episodes   = list(data_module.iter_val())
-        print(f"  Done in {time.time() - t0:.1f}s")
-
-    print(f"Episodes: {len(train_episodes)} train, {len(val_episodes)} val")
+    logger.info(f"Episodes: {len(train_episodes)} train, {len(val_episodes)} val")
 
     # -----------------------------------------------------------------------
     # Build model
     # -----------------------------------------------------------------------
-    print("Building model...")
+    logger.info("Building model...")
     model = PneumaModel(
-        hidden_channels=HIDDEN_CHANNELS,
-        num_heads=NUM_HEADS,
-        num_layers=NUM_LAYERS,
-        dropout=DROPOUT,
-        lambda_v=LAMBDA_V,
-        lambda_s=LAMBDA_S,
+        hidden_channels=Config.HIDDEN_CHANNELS,
+        num_heads=Config.NUM_HEADS,
+        num_layers=Config.NUM_LAYERS,
+        dropout=Config.DROPOUT,
+        lambda_v=Config.LAMBDA_V,
+        lambda_s=Config.LAMBDA_S,
     ).to(device)
 
-    print(f"  Model parameters: "
-          f"{sum(p.numel() for p in model.parameters()):,}")
+    logger.info(f"  Model parameters: "
+                f"{sum(p.numel() for p in model.parameters()):,}")
 
     # -----------------------------------------------------------------------
     # Optimizer
     # -----------------------------------------------------------------------
     optimizer = torch.optim.Adam(
-        model.parameters(), lr=LR, weight_decay=WEIGHT_DECAY
+        model.parameters(), lr=Config.LR, weight_decay=Config.WEIGHT_DECAY
     )
 
     # -----------------------------------------------------------------------
     # Training loop
     # -----------------------------------------------------------------------
-    os.makedirs(CHECKPOINT_DIR, exist_ok=True)
+    os.makedirs(str(Config.CHECKPOINT_DIR), exist_ok=True)
     best_val_loss = float('inf')
     best_epoch    = -1
+    history       = []
 
-    print(f"\nStarting training for {EPOCHS} epochs...")
-    for epoch in range(EPOCHS):
+    logger.info(f"\nStarting training for {Config.EPOCHS} epochs...")
+    for epoch in range(Config.EPOCHS):
         t_epoch = time.time()
 
-        train_metrics = train_epoch(model, train_episodes, optimizer, device)
+        train_metrics = train_epoch(model, train_episodes, optimizer, device, grad_accum_steps=Config.GRAD_ACCUM_STEPS)
         val_metrics   = val_epoch(model, val_episodes, device)
 
         elapsed = time.time() - t_epoch
-        print(
+        logger.info(
             f"Epoch {epoch:03d} | "
             f"train loss={train_metrics['loss']:.4f} "
-            f"(v={train_metrics['vehicle_loss']:.4f}, s={train_metrics['segment_loss']:.4f}) | "
+            f"(v_mae={train_metrics['vehicle_mae']:.4f}, s_mae={train_metrics['segment_mae']:.4f}) | "
             f"val loss={val_metrics['loss']:.4f} "
-            f"(v={val_metrics['vehicle_loss']:.4f}, s={val_metrics['segment_loss']:.4f}) | "
-            f"snaps={train_metrics['n_snapshots']} | "
+            f"(v_mae={val_metrics['vehicle_mae']:.4f}, s_mae={val_metrics['segment_mae']:.4f}) | "
             f"t={elapsed:.1f}s"
         )
+
+        epoch_stats = {
+            'epoch': epoch,
+            'train': train_metrics,
+            'val':   val_metrics
+        }
+        history.append(epoch_stats)
 
         if val_metrics['loss'] < best_val_loss:
             best_val_loss = val_metrics['loss']
             best_epoch    = epoch
-            ckpt_path = Path(CHECKPOINT_DIR) / "best_model.pt"
+            ckpt_path = Config.CHECKPOINT_DIR / "best_model.pt"
             torch.save({
                 'epoch':                epoch,
                 'model_state_dict':     model.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
                 'val_loss':             best_val_loss,
             }, ckpt_path)
-            print(f"  -> Saved best model to {ckpt_path}")
+            logger.info(f"  -> Saved best model to {ckpt_path}")
 
-    print(f"\nTraining complete. Best val loss {best_val_loss:.4f} at epoch {best_epoch}.")
+    # Save history
+    history_path = Config.CHECKPOINT_DIR / "epoch_history.json"
+    with open(history_path, 'w') as f:
+        json.dump(history, f, indent=2)
+    logger.info(f"Saved training history to {history_path}")
+
+    # Final evaluation on best model for visualization
+    logger.info("Running final evaluation on best model...")
+    ckpt = torch.load(Config.CHECKPOINT_DIR / "best_model.pt")
+    model.load_state_dict(ckpt['model_state_dict'])
+    val_results = evaluate_model(model, val_episodes, device)
+    
+    val_results_path = Config.CHECKPOINT_DIR / "val_results.json"
+    with open(val_results_path, 'w') as f:
+        json.dump(val_results, f)
+    logger.info(f"Saved validation results to {val_results_path}")
+
+    logger.info(f"\nTraining complete. Best val loss {best_val_loss:.4f} at epoch {best_epoch}.")
 
 
 if __name__ == '__main__':
