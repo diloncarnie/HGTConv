@@ -3,7 +3,7 @@ pytorch_geometric/
 TGAT/
 pyHGT/
 processed_data/
-DBLP-dataset/
+DBLP/
 /raw*
 /cache/*
 .__pycache__/
@@ -12,8 +12,8 @@ DBLP-dataset/
 *.pdf
 *.vscode
 data
-*.md
 *.pt
 checkpoints/
 plots/
-.claude
+*.json
+training_pipeline.md
