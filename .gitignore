@@ -1,6 +1,7 @@
 
 pytorch_geometric/
 TGAT/
+pyHGT/
 processed_data/
 DBLP-dataset/
 /raw*
@@ -11,3 +12,7 @@ DBLP-dataset/
 *.pdf
 *.vscode
 data
+*.md
+*.pt
+checkpoints/
+plots/

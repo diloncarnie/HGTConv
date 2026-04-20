@@ -40,27 +40,28 @@ def plot_training_curves(history: list):
     plt.savefig(OUTPUT_DIR / "loss_curves.png", dpi=300)
     plt.close()
 
-    # MAE curves (broken down)
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
-    
-    # Vehicle MAE
-    ax1.plot(epochs, [h['train']['vehicle_mae'] for h in history], label='Train Vehicle')
-    ax1.plot(epochs, [h['val']['vehicle_mae'] for h in history], label='Val Vehicle')
-    ax1.set_xlabel('Epoch')
-    ax1.set_ylabel('MAE')
-    ax1.set_title('Vehicle Kinematics Prediction Error')
-    ax1.legend()
-
-    # Segment MAE
-    ax2.plot(epochs, [h['train']['segment_mae'] for h in history], label='Train Segment')
-    ax2.plot(epochs, [h['val']['segment_mae'] for h in history], label='Val Segment')
-    ax2.set_xlabel('Epoch')
-    ax2.set_ylabel('MAE')
-    ax2.set_title('Segment Speed Prediction Error')
-    ax2.legend()
-
+    # Vehicle MAE Plot
+    plt.figure(figsize=(10, 6))
+    plt.plot(epochs, [h['train']['vehicle_mae'] for h in history], label='Train (Vehicle)', linewidth=2)
+    plt.plot(epochs, [h['val']['vehicle_mae'] for h in history], label='Val (Vehicle)', linewidth=2)
+    plt.xlabel('Epoch')
+    plt.ylabel('MAE')
+    plt.title('Vehicle Kinematics Prediction Error (MAE)')
+    plt.legend()
     plt.tight_layout()
-    plt.savefig(OUTPUT_DIR / "mae_curves.png", dpi=300)
+    plt.savefig(OUTPUT_DIR / "mae_vehicle.png", dpi=300)
+    plt.close()
+
+    # Segment MAE Plot
+    plt.figure(figsize=(10, 6))
+    plt.plot(epochs, [h['train']['segment_mae'] for h in history], label='Train (Segment)', linewidth=2)
+    plt.plot(epochs, [h['val']['segment_mae'] for h in history], label='Val (Segment)', linewidth=2)
+    plt.xlabel('Epoch')
+    plt.ylabel('MAE')
+    plt.title('Segment Speed Prediction Error (MAE)')
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(OUTPUT_DIR / "mae_segment.png", dpi=300)
     plt.close()
 
 def plot_scatter_and_residuals(val_results: dict):
