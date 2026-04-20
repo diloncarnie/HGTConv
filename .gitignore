@@ -16,3 +16,4 @@ data
 *.pt
 checkpoints/
 plots/
+.claude
