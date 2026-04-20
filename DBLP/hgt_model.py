@@ -170,7 +170,7 @@ class HGTConv(MessagePassing):
         for node_type, outs in out_dict.items():
             if len(outs) > 0:
                 agg_out_dict[node_type] = sum(outs)
-            else:
+            elif node_type in q_dict:
                 agg_out_dict[node_type] = torch.zeros(q_dict[node_type].size(0), F, device=q_dict[node_type].device)
 
         # Transform output node embeddings:
@@ -224,16 +224,19 @@ class HGTConv(MessagePassing):
 
 
 class HGT(torch.nn.Module):
-    def __init__(self, hidden_channels, num_heads, num_layers, metadata, 
-                 dropout=0.2, prev_norm=True, last_norm=True):
+    def __init__(self, hidden_channels, num_heads, num_layers, metadata,
+                 dropout=0.2, prev_norm=True, last_norm=True, in_channels: Union[int, Dict[str, int]] = -1):
         super().__init__()
         self.node_types = metadata[0]
         self.num_layers = num_layers
 
+        if not isinstance(in_channels, dict):
+            in_channels = {node_type: in_channels for node_type in self.node_types}
+
         # Initial Adaptation Layers
         self.lin_dict = ModuleDict()
         for node_type in self.node_types:
-            self.lin_dict[node_type] = Linear(-1, hidden_channels)
+            self.lin_dict[node_type] = Linear(in_channels[node_type], hidden_channels)
 
         self.drop = Dropout(dropout)
 

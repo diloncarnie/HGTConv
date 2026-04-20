@@ -1,7 +1,6 @@
-pyHGT/
+
 pytorch_geometric/
 TGAT/
-*.csv
 processed_data/
 DBLP-dataset/
 /raw*
@@ -11,3 +10,8 @@ DBLP-dataset/
 *.html
 *.pdf
 *.vscode
+data
+*.csv
+*.gpkg
+*.json
+*.pt
